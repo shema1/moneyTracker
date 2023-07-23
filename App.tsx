@@ -4,6 +4,7 @@ import {Spinner, StatusBar} from 'native-base';
 import {ScrollView, StyleSheet, useColorScheme} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
+import * as storage from './utils/storage';
 
 export const NAVIGATION_PERSISTENCE_KEY = 'NAVIGATION_STATE';
 
