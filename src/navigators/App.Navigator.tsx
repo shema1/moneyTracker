@@ -7,10 +7,10 @@
 import React from 'react';
 import {DarkTheme, NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {
-  useFlipper,
-  useReduxDevToolsExtension,
-} from '@react-navigation/devtools';
+// import {
+//   useFlipper,
+//   useReduxDevToolsExtension,
+// } from '@react-navigation/devtools';
 import {navigationRef, useBackButtonHandler} from './NavigationUtilities';
 import {OnboardingNavigator} from './onboarding/Onboarding.navigator';
 import Config from '../config';
@@ -50,7 +50,7 @@ const AppStack = () => {
   return (
     <Stack.Navigator
       screenOptions={{headerShown: false}}
-      initialRouteName={NAVIGATOR_ONBOARDING}>
+      initialRouteName={NAVIGATOR_MAIN}>
       {/* ONBOARDING STEPS */}
       <Stack.Screen
         name={NAVIGATOR_ONBOARDING}
@@ -69,8 +69,8 @@ export const AppNavigator = (props: NavigationProps) => {
     routeName => exitRoutes.includes(routeName),
     routeName => redirectHomeRoutes.includes(routeName),
   );
-  useFlipper(navigationRef);
-  useReduxDevToolsExtension(navigationRef);
+  // useFlipper(navigationRef);
+  // useReduxDevToolsExtension(navigationRef);
 
   return (
     <NavigationContainer

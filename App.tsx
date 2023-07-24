@@ -1,16 +1,22 @@
 import React from 'react';
+import {NativeBaseProvider, StatusBar} from 'native-base';
 import {AppNavigator, useNavigationPersistence} from './src/navigators';
-import {Spinner, StatusBar} from 'native-base';
-import {ScrollView, StyleSheet, useColorScheme} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import * as storage from './utils/storage';
+import * as storage from './src/utils/storage';
+import {
+  SafeAreaProvider,
+  initialWindowMetrics,
+} from 'react-native-safe-area-context';
+import {Provider} from 'react-redux';
+import {persistor, store} from './src/store';
+import {PersistGate} from 'redux-persist/integration/react';
 
 export const NAVIGATION_PERSISTENCE_KEY = 'NAVIGATION_STATE';
 
 function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
+  // const isDarkMode = useColorScheme() === 'dark';
+  // const [theme, setTheme] = useState(getTheme('dark'));
+  const isDarkMode = false;
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
@@ -21,47 +27,37 @@ function App(): JSX.Element {
     isRestored: isNavigationStateRestored,
   } = useNavigationPersistence(storage, NAVIGATION_PERSISTENCE_KEY);
 
-  const appIsReady = isNavigationStateRestored;
+  // const appIsReady = isNavigationStateRestored;
+
+  // const colorModeManager = {
+  //   get: async () => {
+  //     // THIS IS NOT TESTED: AT THE MOMENT IS WORKING ONLY ON DARK MODE
+  //     // TODO: change this to get dark and light mode.
+  //     return 'dark';
+  //   },
+  //   set: async value => {
+  //     setTheme(getTheme(value));
+  //   },
+  // };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      {!appIsReady ? (
-        <Spinner size="lg" />
-      ) : (
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={backgroundStyle}>
-          <AppNavigator
-            initialState={initialNavigationState}
-            onStateChange={onNavigationStateChange}
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <NativeBaseProvider>
+          <StatusBar
+            barStyle={!isDarkMode ? 'light-content' : 'dark-content'}
+            backgroundColor="red"
           />
-        </ScrollView>
-      )}
-    </SafeAreaView>
+          <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+            <AppNavigator
+              initialState={initialNavigationState}
+              onStateChange={onNavigationStateChange}
+            />
+          </SafeAreaProvider>
+        </NativeBaseProvider>
+      </PersistGate>
+    </Provider>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;
